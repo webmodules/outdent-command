@@ -1,0 +1,43 @@
+{
+  "name": "outdent-command",
+  "version": "0.0.0",
+  "description": "A Command implementation that removes the nearest BLOCKQUOTE element from the DOM",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "tsc --module commonjs --declaration index.ts",
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/webmodules/outdent-command.git"
+  },
+  "keywords": [
+    "browser",
+    "command",
+    "outdent",
+    "blockquote",
+    "remove",
+    "dom",
+    "interface"
+  ],
+  "author": "Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/webmodules/outdent-command/issues"
+  },
+  "homepage": "https://github.com/webmodules/outdent-command",
+  "dependencies": {
+    "component-closest": "~0.1.4",
+    "current-range": "~1.1.0",
+    "current-selection": "~1.1.0",
+    "debug": "~2.0.0",
+    "dom-iterator": "~0.3.0",
+    "frozen-range": "~1.0.0",
+    "node-contains": "~1.0.0",
+    "unwrap-node": "0.0.1"
+  },
+  "devDependencies": {
+    "typescript": "~1.0.1",
+    "zuul": "~1.10.2"
+  }
+}
