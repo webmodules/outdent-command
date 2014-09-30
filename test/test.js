@@ -24,7 +24,7 @@ describe('OutdentCommand', function () {
 
     describe('execute()', function () {
 
-      it('should insert a BLOCKQUOTE element around parent block', function () {
+      it('should remove a BLOCKQUOTE element from parent block', function () {
         div = document.createElement('div');
         div.innerHTML = '<blockquote><p>hello</p></blockquote><p>world!</p>';
         div.setAttribute('contenteditable', 'true');
@@ -41,12 +41,13 @@ describe('OutdentCommand', function () {
         sel.addRange(range);
 
         var outdent = new OutdentCommand();
-
         outdent.execute();
+
+        // test that we have the expected HTML at this point
         assert.equal('<p>hello</p><p>world!</p>', div.innerHTML);
 
         // test that the Selection remains intact
-        var sel = window.getSelection();
+        sel = window.getSelection();
         range = sel.getRangeAt(0);
         assert(range.startContainer === div.firstChild.firstChild);
         assert(range.startOffset === 1);
