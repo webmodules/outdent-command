@@ -74,6 +74,11 @@ class OutdentCommand implements Command {
     if (blocks.length > 0) {
       debug('need to remove %o BLOCKQUOTE elements', blocks.length);
 
+      if (contains(parent, blocks[0])) {
+        parent = parent.parentNode;
+        debug('setting `parent` to %o', parent);
+      }
+
       for (var i = 0; i < blocks.length; i++) {
         unwrap(blocks[i]);
       }

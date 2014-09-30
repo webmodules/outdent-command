@@ -55,6 +55,38 @@ describe('OutdentCommand', function () {
         assert(range.endOffset === 1);
       });
 
+      it('should remove a BLOCKQUOTE element when parent already multiple BLOCKQUOTEs', function () {
+        div = document.createElement('div');
+        div.innerHTML = '<blockquote><blockquote><blockquote><p>hello</p><p>world!</p></blockquote></blockquote></blockquote>';
+        div.setAttribute('contenteditable', 'true');
+        document.body.appendChild(div);
+
+        // set current selection
+        var range = document.createRange();
+        range.setStart(div.firstChild.firstChild.firstChild.firstChild.firstChild, 2);
+        range.setEnd(div.firstChild.firstChild.firstChild.lastChild.firstChild, 2);
+        assert(!range.collapsed);
+        assert.equal('llowo', range.toString());
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        var outdent = new OutdentCommand();
+        outdent.execute();
+
+        // test that we have the expected HTML at this point
+        assert.equal('<blockquote><blockquote><p>hello</p><p>world!</p></blockquote></blockquote>', div.innerHTML);
+        // test that the Selection remains intact
+        sel = window.getSelection();
+        range = sel.getRangeAt(0);
+        assert(range.startContainer === div.firstChild.firstChild.firstChild.firstChild);
+        assert(range.startOffset === 2);
+        assert(range.endContainer === div.firstChild.firstChild.lastChild.firstChild);
+        assert(range.endOffset === 2);
+        assert.equal('llowo', range.toString());
+      });
+
     });
 
   });
