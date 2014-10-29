@@ -12,7 +12,6 @@ import Command = require('command');
 
 var contains = require('node-contains');
 var closest = require('component-closest');
-var unwrap = require('unwrap-node');
 var currentRange = require('current-range');
 var currentSelection = require('current-selection');
 var setRange = require('selection-set-range');
@@ -78,7 +77,7 @@ class OutdentCommand implements Command {
     }
 
     if (blocks.length > 0) {
-      debug('need to unwrap %o "block elements"', blocks.length);
+      debug('need to unwrap %o "block elements" from parent BLOCKQUOTE', blocks.length);
 
       if (contains(parent, blocks[0])) {
         parent = parent.parentNode;
