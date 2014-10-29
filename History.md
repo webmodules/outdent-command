@@ -1,4 +1,12 @@
 
+1.1.0 / 2014-10-29
+==================
+
+ * index: remove unused `unwrap-node` dependency
+ * index: initial take at "better" behavior
+ * index: support backwards Selections
+ * package: allow any debug v2
+
 1.0.1 / 2014-09-29
 ==================
 
