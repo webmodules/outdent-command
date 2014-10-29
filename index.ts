@@ -15,6 +15,8 @@ var closest = require('component-closest');
 var unwrap = require('unwrap-node');
 var currentRange = require('current-range');
 var currentSelection = require('current-selection');
+var setRange = require('selection-set-range');
+var isBackward = require('selection-is-backward');
 var domIterator = require('dom-iterator');
 var FrozenRange = require('frozen-range');
 var debug = require('debug')('outdent-command');
@@ -43,10 +45,12 @@ class OutdentCommand implements Command {
 
   execute(range?: Range, value?: any): void {
     var hasRange: boolean = !!(range && range instanceof Range);
+    var backward: boolean;
     var selection: Selection;
 
     if (!hasRange) {
       selection = currentSelection(this.document);
+      backward = isBackward(selection);
       range = currentRange(selection);
     }
 
@@ -87,8 +91,7 @@ class OutdentCommand implements Command {
 
       if (!hasRange) {
         // when no Range was passed in then we must reset the document's Selection
-        selection.removeAllRanges();
-        selection.addRange(range);
+        setRange(selection, range, backward);
       }
     }
   }

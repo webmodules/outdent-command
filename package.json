@@ -34,6 +34,8 @@
     "dom-iterator": "~0.3.0",
     "frozen-range": "~1.0.0",
     "node-contains": "~1.0.0",
+    "selection-is-backward": "~1.0.0",
+    "selection-set-range": "~1.0.0",
     "unwrap-node": "0.0.1"
   },
   "devDependencies": {
