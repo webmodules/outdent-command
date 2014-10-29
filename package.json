@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/webmodules/outdent-command",
   "dependencies": {
+    "block-elements": "~1.0.0",
     "component-closest": "~0.1.4",
     "current-range": "~1.1.0",
     "current-selection": "~1.1.0",

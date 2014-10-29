@@ -19,6 +19,7 @@ var setRange = require('selection-set-range');
 var isBackward = require('selection-is-backward');
 var domIterator = require('dom-iterator');
 var FrozenRange = require('frozen-range');
+var blockSel = require('block-elements').join(', ');
 var debug = require('debug')('outdent-command');
 
 /**
@@ -56,6 +57,7 @@ class OutdentCommand implements Command {
 
     // array to ensure that we only process a particular block node once
     // (in the instance that it has multiple text node children)
+    var block: HTMLElement;
     var blocks: HTMLElement[] = [];
 
     var parent = range.commonAncestorContainer;
@@ -66,9 +68,9 @@ class OutdentCommand implements Command {
     var iterator = domIterator(next).revisit(false);
 
     while (next) {
-      var block: HTMLElement = closest(next, 'blockquote', true);
-      debug('closest "block" node: %o', block);
-      if (block && -1 === blocks.indexOf(block)) {
+      block = closest(next, blockSel, true);
+      debug('closest "block element" node: %o', block);
+      if (block && block.parentNode.nodeName === 'BLOCKQUOTE' && -1 === blocks.indexOf(block)) {
         blocks.push(block);
       }
       if (contains(end, next)) break;
@@ -76,15 +78,24 @@ class OutdentCommand implements Command {
     }
 
     if (blocks.length > 0) {
-      debug('need to remove %o BLOCKQUOTE elements', blocks.length);
+      debug('need to unwrap %o "block elements"', blocks.length);
 
       if (contains(parent, blocks[0])) {
         parent = parent.parentNode;
         debug('setting `parent` to %o', parent);
       }
 
-      for (var i = 0; i < blocks.length; i++) {
-        unwrap(blocks[i]);
+      var blockquote: HTMLElement;
+      for (var i = blocks.length - 1; i >= 0; i--) {
+        block = blocks[i];
+        blockquote = <HTMLElement>block.parentNode;
+        insertAfter(block, blockquote);
+
+        // at this point, if the parent BLOCKQUOTE is empty, then remove it
+        if (!blockquote.childNodes.length) {
+          debug('removing empty %o element from DOM', blockquote.nodeName);
+          blockquote.parentNode.removeChild(blockquote);
+        }
       }
 
       fr.thaw(parent, range);
@@ -119,6 +130,16 @@ class OutdentCommand implements Command {
     }
 
     return true;
+  }
+}
+
+function insertAfter(newElement, targetElement) {
+  var parent = targetElement.parentNode;
+
+  if (parent.lastChild === targetElement) {
+    parent.appendChild(newElement);
+  } else {
+    parent.insertBefore(newElement, targetElement.nextSibling);
   }
 }
 

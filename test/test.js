@@ -77,6 +77,7 @@ describe('OutdentCommand', function () {
 
         // test that we have the expected HTML at this point
         assert.equal('<blockquote><blockquote><p>hello</p><p>world!</p></blockquote></blockquote>', div.innerHTML);
+
         // test that the Selection remains intact
         sel = window.getSelection();
         range = sel.getRangeAt(0);
@@ -85,6 +86,38 @@ describe('OutdentCommand', function () {
         assert(range.endContainer === div.firstChild.firstChild.lastChild.firstChild);
         assert(range.endOffset === 2);
         assert.equal('llowo', range.toString());
+      });
+
+      it('should remove a P from parent BLOCKQUOTE element', function () {
+        div = document.createElement('div');
+        div.innerHTML = '<blockquote><p>hello</p><p>world!</p></blockquote>';
+        div.setAttribute('contenteditable', 'true');
+        document.body.appendChild(div);
+
+        // set current selection
+        var range = document.createRange();
+        range.setStart(div.firstChild.lastChild.firstChild, 2);
+        range.setEnd(div.firstChild.lastChild.firstChild, 2);
+        assert(range.collapsed);
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        var outdent = new OutdentCommand();
+        outdent.execute();
+
+        // test that we have the expected HTML at this point
+        assert.equal('<blockquote><p>hello</p></blockquote><p>world!</p>', div.innerHTML);
+
+        // test that the Selection remains intact
+        sel = window.getSelection();
+        range = sel.getRangeAt(0);
+        assert(range.startContainer === div.lastChild.firstChild);
+        assert(range.startOffset === 2);
+        assert(range.endContainer === div.lastChild.firstChild);
+        assert(range.endOffset === 2);
+        assert(range.collapsed);
       });
 
     });
