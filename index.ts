@@ -88,7 +88,14 @@ class OutdentCommand implements Command {
       for (var i = blocks.length - 1; i >= 0; i--) {
         block = blocks[i];
         blockquote = <HTMLElement>block.parentNode;
-        insertAfter(block, blockquote);
+
+        if (!block.nextSibling) {
+          // block is at the end of the BLOCKQUOTE, insert after
+          insertAfter(block, blockquote);
+        } else if (!block.previousSibling) {
+          // block is at the beginning of the BLOCKQUOTE, insert before
+          blockquote.parentNode.insertBefore(block, blockquote);
+        }
 
         // at this point, if the parent BLOCKQUOTE is empty, then remove it
         if (!blockquote.childNodes.length) {
