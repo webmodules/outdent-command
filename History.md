@@ -1,4 +1,10 @@
 
+1.1.1 / 2014-11-03
+==================
+
+ * index: handle blocks being removed in the middle of a BLOCKQUOTE
+ * index: handle blocks being removed at the top of a BLOCKQUOTE
+
 1.1.0 / 2014-10-29
 ==================
 
