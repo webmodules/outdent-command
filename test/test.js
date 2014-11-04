@@ -152,6 +152,38 @@ describe('OutdentCommand', function () {
         assert(range.collapsed);
       });
 
+      it('should remove middle P from parent BLOCKQUOTE element', function () {
+        div = document.createElement('div');
+        div.innerHTML = '<blockquote><p>foo</p><p>bar</p><p>baz</p></blockquote>';
+        div.setAttribute('contenteditable', 'true');
+        document.body.appendChild(div);
+
+        // set current selection
+        var range = document.createRange();
+        range.setStart(div.firstChild.childNodes[1].firstChild, 0);
+        range.setEnd(div.firstChild.childNodes[1].firstChild, 0);
+        assert(range.collapsed);
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        var outdent = new OutdentCommand();
+        outdent.execute();
+
+        // test that we have the expected HTML at this point
+        assert.equal('<blockquote><p>foo</p></blockquote><p>bar</p><blockquote><p>baz</p></blockquote>', div.innerHTML);
+
+        // test that the Selection remains intact
+        sel = window.getSelection();
+        range = sel.getRangeAt(0);
+        assert(range.startContainer === div.childNodes[1].firstChild);
+        assert(range.startOffset === 0);
+        assert(range.endContainer === div.childNodes[1].firstChild);
+        assert(range.endOffset === 0);
+        assert(range.collapsed);
+      });
+
     });
 
   });

@@ -92,9 +92,19 @@ class OutdentCommand implements Command {
         if (!block.nextSibling) {
           // block is at the end of the BLOCKQUOTE, insert after
           insertAfter(block, blockquote);
+
         } else if (!block.previousSibling) {
           // block is at the beginning of the BLOCKQUOTE, insert before
           blockquote.parentNode.insertBefore(block, blockquote);
+
+        } else {
+          // there's children on both sides of the block, must split the BLOCKQUOTE
+          var duplicate = blockquote.cloneNode(false);
+          while (block.nextSibling) {
+            duplicate.appendChild(block.nextSibling);
+          }
+          insertAfter(duplicate, blockquote);
+          insertAfter(block, blockquote);
         }
 
         // at this point, if the parent BLOCKQUOTE is empty, then remove it
