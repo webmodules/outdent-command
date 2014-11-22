@@ -4,22 +4,16 @@
  * TypeScript dependencies.
  */
 
-import Command = require('command');
+import AbstractCommand = require('abstract-command');
+import contains = require('node-contains');
+import closest = require('component-closest');
+import DomIterator = require('dom-iterator');
+import FrozenRange = require('frozen-range');
+import blockElements = require('block-elements');
+import DEBUG = require('debug');
 
-/**
- * JavaScript dependencies.
- */
-
-var contains = require('node-contains');
-var closest = require('component-closest');
-var currentRange = require('current-range');
-var currentSelection = require('current-selection');
-var setRange = require('selection-set-range');
-var isBackward = require('selection-is-backward');
-var domIterator = require('dom-iterator');
-var FrozenRange = require('frozen-range');
-var blockSel = require('block-elements').join(', ');
-var debug = require('debug')('outdent-command');
+var debug = DEBUG('outdent-command');
+var blockSel = blockElements.join(', ');
 
 /**
  * `OutdentCommand` class is a Command implementation that removes the nearest
@@ -35,24 +29,14 @@ var debug = require('debug')('outdent-command');
  * @public
  */
 
-class OutdentCommand implements Command {
-  public document: Document;
+class OutdentCommand extends AbstractCommand {
 
   constructor(doc: Document = document) {
-    this.document = doc;
+    super(doc);
     debug('created OutdentCommand: document %o', this.document);
   }
 
-  execute(range?: Range, value?: any): void {
-    var hasRange: boolean = !!(range && range instanceof Range);
-    var backward: boolean;
-    var selection: Selection;
-
-    if (!hasRange) {
-      selection = currentSelection(this.document);
-      backward = isBackward(selection);
-      range = currentRange(selection);
-    }
+  protected _execute(range: Range, value?: any): void {
 
     // array to ensure that we only process a particular block node once
     // (in the instance that it has multiple text node children)
@@ -64,7 +48,7 @@ class OutdentCommand implements Command {
 
     var next = range.startContainer;
     var end = range.endContainer;
-    var iterator = domIterator(next).revisit(false);
+    var iterator = new DomIterator(next).revisit(false);
 
     while (next) {
       block = closest(next, blockSel, true);
@@ -115,26 +99,13 @@ class OutdentCommand implements Command {
       }
 
       fr.thaw(parent, range);
-
-      if (!hasRange) {
-        // when no Range was passed in then we must reset the document's Selection
-        setRange(selection, range, backward);
-      }
     }
   }
 
-  queryEnabled(range?: Range): boolean {
-    if (!range) range = currentRange(this.document);
-    return !! range;
-  }
-
-  queryState(range?: Range): boolean {
-    if (!range) range = currentRange(this.document);
-    if (!range) return false;
-
+  protected _queryState(range: Range): boolean {
     var next = range.startContainer;
     var end = range.endContainer;
-    var iterator = domIterator(next).revisit(false);
+    var iterator = new DomIterator(next).revisit(false);
 
     while (next) {
       var blockquote: HTMLElement = closest(next, 'blockquote', true);
