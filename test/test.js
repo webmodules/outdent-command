@@ -160,8 +160,8 @@ describe('OutdentCommand', function () {
 
         // set current selection
         var range = document.createRange();
-        range.setStart(div.firstChild.childNodes[1].firstChild, 0);
-        range.setEnd(div.firstChild.childNodes[1].firstChild, 0);
+        range.setStart(div.firstChild.childNodes[1].firstChild, 1);
+        range.setEnd(div.firstChild.childNodes[1].firstChild, 1);
         assert(range.collapsed);
 
         var sel = window.getSelection();
@@ -178,9 +178,9 @@ describe('OutdentCommand', function () {
         sel = window.getSelection();
         range = sel.getRangeAt(0);
         assert(range.startContainer === div.childNodes[1].firstChild);
-        assert(range.startOffset === 0);
+        assert(range.startOffset === 1);
         assert(range.endContainer === div.childNodes[1].firstChild);
-        assert(range.endOffset === 0);
+        assert(range.endOffset === 1);
         assert(range.collapsed);
       });
 
