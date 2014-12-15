@@ -184,6 +184,38 @@ describe('OutdentCommand', function () {
         assert(range.collapsed);
       });
 
+      it('should remove selected Ps from parent BLOCKQUOTE element with H1 in front', function () {
+        div = document.createElement('div');
+        div.innerHTML = '<h1>test</h1><p>one</p><blockquote><p>two</p><p>three</p></blockquote>';
+        div.setAttribute('contenteditable', 'true');
+        document.body.appendChild(div);
+
+        // set current selection
+        var range = document.createRange();
+        range.setStart(div.lastChild.firstChild.firstChild, 2);
+        range.setEnd(div.lastChild.lastChild.firstChild, 3);
+        assert.equal('othr', range.toString());
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        var outdent = new OutdentCommand();
+        outdent.execute();
+
+        // test that we have the expected HTML at this point
+        assert.equal('<h1>test</h1><p>one</p><p>two</p><p>three</p>', div.innerHTML);
+
+        // test that the Selection remains intact
+        sel = window.getSelection();
+        range = sel.getRangeAt(0);
+        assert(range.startContainer === div.childNodes[2].firstChild);
+        assert(range.startOffset === 2);
+        assert(range.endContainer === div.lastChild.firstChild);
+        assert(range.endOffset === 3);
+        assert.equal('othr', range.toString());
+      });
+
     });
 
   });

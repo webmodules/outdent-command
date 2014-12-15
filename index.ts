@@ -8,7 +8,7 @@ import AbstractCommand = require('abstract-command');
 import contains = require('node-contains');
 import closest = require('component-closest');
 import DomIterator = require('dom-iterator');
-import FrozenRange = require('frozen-range');
+import saveRange = require('save-range');
 import blockElements = require('block-elements');
 import DEBUG = require('debug');
 
@@ -43,9 +43,6 @@ class OutdentCommand extends AbstractCommand {
     var block: HTMLElement;
     var blocks: HTMLElement[] = [];
 
-    var parent = range.commonAncestorContainer;
-    var fr = new FrozenRange(range, parent);
-
     var next = range.startContainer;
     var end = range.endContainer;
     var iterator = new DomIterator(next).revisit(false);
@@ -63,9 +60,12 @@ class OutdentCommand extends AbstractCommand {
     if (blocks.length > 0) {
       debug('need to unwrap %o "block elements" from parent BLOCKQUOTE', blocks.length);
 
-      if (contains(parent, blocks[0])) {
+      var parent = range.commonAncestorContainer;
+      var info: saveRange.Info = saveRange(range);
+
+      // find the first parent node that's not a BLOCKQUOTE
+      while (parent && (parent.nodeType !== 1 || parent.nodeName === 'BLOCKQUOTE')) {
         parent = parent.parentNode;
-        debug('setting `parent` to %o', parent);
       }
 
       var blockquote: HTMLElement;
@@ -98,7 +98,8 @@ class OutdentCommand extends AbstractCommand {
         }
       }
 
-      fr.thaw(parent, range);
+      saveRange.load(info, <HTMLElement>parent);
+      if (parent) (<HTMLElement>parent).normalize();
     }
   }
 
