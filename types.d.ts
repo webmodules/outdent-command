@@ -75,18 +75,3 @@ declare module "node-contains" {
   function contains(node: Node, other: Node): boolean;
   export = contains;
 }
-
-declare module "save-range" {
-  function saveRange(range: Range, doc?: Document): saveRange.Info;
-  module saveRange {
-    export interface Info {
-      id: string;
-      range: Range;
-      document: Document;
-      parent: HTMLElement;
-      collapsed: boolean;
-    }
-    export function load(info: saveRange.Info, parent?: HTMLElement): Range;
-  }
-  export = saveRange;
-}
