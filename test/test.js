@@ -216,6 +216,38 @@ describe('OutdentCommand', function () {
         assert.equal('othr', range.toString());
       });
 
+      it('should remove a BLOCKQUOTE element from P with a BR', function () {
+        div = document.createElement('div');
+        div.innerHTML = '<blockquote><p><br></p></blockquote>';
+        div.setAttribute('contenteditable', 'true');
+        document.body.appendChild(div);
+
+        // set current selection
+        var range = document.createRange();
+        range.setStart(div.firstChild.firstChild, 0);
+        range.setEnd(div.firstChild.firstChild, 0);
+        assert(range.collapsed);
+
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        var outdent = new OutdentCommand();
+        outdent.execute();
+
+        // test that we have the expected HTML at this point
+        assert.equal('<p><br></p>', div.innerHTML);
+
+        // test that the Selection remains intact
+        sel = window.getSelection();
+        range = sel.getRangeAt(0);
+        assert(range.collapsed);
+        assert(range.startContainer === div.firstChild);
+        assert(range.startOffset === 0);
+        assert(range.endContainer === div.firstChild);
+        assert(range.endOffset === 0);
+      });
+
     });
 
   });
