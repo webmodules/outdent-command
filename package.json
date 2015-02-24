@@ -36,7 +36,7 @@
     "save-range": "~1.0.0"
   },
   "devDependencies": {
-    "typescript": "~1.3.0",
+    "typescript": "~1.4.1",
     "zuul": "1"
   }
 }
