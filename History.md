@@ -1,4 +1,10 @@
 
+1.2.1 / 2015-02-24
+==================
+
+  * types: remove "save-range" type definition
+  * index: slight refactor to not use "save-range"
+
 1.2.0 / 2015-02-23
 ==================
 
