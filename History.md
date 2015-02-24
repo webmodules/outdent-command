@@ -1,4 +1,15 @@
 
+1.2.0 / 2015-02-23
+==================
+
+  * test: add collapsed BR outdent test
+  * test: use an offset
+  * types: more accurate "dom-iterator" type definition
+  * package: update "typescript" to v1.4.1
+  * package: allow any "zuul" v1
+  * refactor to extend `AbstractCommand` base class
+  * use "save-range" module instead of "frozen-range"
+
 1.1.1 / 2014-11-03
 ==================
 
