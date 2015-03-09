@@ -47,9 +47,7 @@ class OutdentCommand extends AbstractCommand {
     var endOffset = range.endOffset;
 
     var next;
-    var iterator = RangeIterator(range, function (node) {
-      return 0 === node.childNodes.length;
-    });
+    var iterator = RangeIterator(range, (node) => 0 === node.childNodes.length);
 
     while (!(next = iterator.next()).done) {
       block = closest(next.value, blockSel, true);
@@ -106,9 +104,7 @@ class OutdentCommand extends AbstractCommand {
 
   protected _queryState(range: Range): boolean {
     var next;
-    var iterator = RangeIterator(range, function (node) {
-      return 0 === node.childNodes.length;
-    });
+    var iterator = RangeIterator(range, (node) => 0 === node.childNodes.length);
 
     while (!(next = iterator.next()).done) {
       var blockquote: HTMLElement = closest(next.value, 'blockquote', true);
