@@ -31,7 +31,6 @@
     "block-elements": "~1.0.0",
     "component-closest": "~0.1.4",
     "debug": "2",
-    "node-contains": "~1.0.0",
     "range-iterator": "~2.0.0"
   },
   "devDependencies": {
