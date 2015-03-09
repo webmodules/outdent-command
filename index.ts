@@ -5,9 +5,8 @@
  */
 
 import AbstractCommand = require('abstract-command');
-import contains = require('node-contains');
 import closest = require('component-closest');
-import DomIterator = require('dom-iterator');
+import RangeIterator = require('range-iterator');
 import blockElements = require('block-elements');
 import DEBUG = require('debug');
 
@@ -47,18 +46,17 @@ class OutdentCommand extends AbstractCommand {
     var endContainer = range.endContainer;
     var endOffset = range.endOffset;
 
-    var next = startContainer;
-    var end = endContainer;
-    var iterator = new DomIterator(next).revisit(false);
+    var next;
+    var iterator = RangeIterator(range, function (node) {
+      return 0 === node.childNodes.length;
+    });
 
-    while (next) {
-      block = closest(next, blockSel, true);
+    while (!(next = iterator.next()).done) {
+      block = closest(next.value, blockSel, true);
       debug('closest "block element" node: %o', block);
       if (block && block.parentNode.nodeName === 'BLOCKQUOTE' && -1 === blocks.indexOf(block)) {
         blocks.push(block);
       }
-      if (contains(end, next)) break;
-      next = iterator.next(3 /* Node.TEXT_NODE */);
     }
 
     if (blocks.length > 0) {
@@ -107,17 +105,14 @@ class OutdentCommand extends AbstractCommand {
   }
 
   protected _queryState(range: Range): boolean {
-    var next = range.startContainer;
-    var end = range.endContainer;
-    var iterator = new DomIterator(next).revisit(false);
+    var next;
+    var iterator = RangeIterator(range, function (node) {
+      return 0 === node.childNodes.length;
+    });
 
-    while (next) {
-      var blockquote: HTMLElement = closest(next, 'blockquote', true);
-      if (!blockquote) {
-        return false;
-      }
-      if (contains(end, next)) break;
-      next = iterator.next(3 /* Node.TEXT_NODE */);
+    while (!(next = iterator.next()).done) {
+      var blockquote: HTMLElement = closest(next.value, 'blockquote', true);
+      if (!blockquote) return false;
     }
 
     return true;
