@@ -1,4 +1,11 @@
 
+1.3.0 / 2015-03-09
+==================
+
+  * refactor to use "range-iterator"
+  * package: allow any "zuul" v2
+  * package: remove unused "node-contains" dependency
+
 1.2.1 / 2015-02-24
 ==================
 
